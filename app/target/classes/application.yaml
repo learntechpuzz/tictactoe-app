@@ -1,17 +1,0 @@
----
-server:
-  port: 7002
-  
-spring:
-  application:
-    name: tictactoe-service
-  datasource:    url: jdbc:h2:file:D:/data/gamedb
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
-  h2:    console:
-      path: /h2      enabled: true 
-logging:  file:    name: D:/logs/application.log
-  pattern:    file: "%d %p %c{1.} [%t] %m%n"  level: 
-    org.springframework: ERROR
-    com.wipro: DEBUG    
