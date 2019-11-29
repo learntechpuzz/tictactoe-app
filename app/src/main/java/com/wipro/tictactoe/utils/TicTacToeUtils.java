@@ -67,23 +67,6 @@ public class TicTacToeUtils {
 			}
 		}
 
-		for (int i = 0; i < Math.pow(2, Constants.GAME_SIZE); i++) {
-			ticTacToeTemp = getTicTacToe(moves);
-			logger.debug("findBestMove::player::ticTacToeTemp: " + ticTacToeTemp.toString());
-			logger.debug("findBestMove::player::i: " + i);
-			logger.debug("findBestMove::player::getRow(" + i + "): " + getRow(i));
-			logger.debug("findBestMove::player::getCol(" + i + "): " + getCol(i));
-			if (!m.contains(i)) {
-				gameStatus = ticTacToeTemp.move(getRow(i), getCol(i), Constants.PLAYER);
-				logger.debug("findBestMove::player::gameStatus: " + gameStatus);
-				if (gameStatus == Constants.PLAYER_WINS) {
-					bestMove = i;
-					logger.debug("findBestMove::player::bestMove: " + bestMove);
-					return bestMove;
-				}
-			}
-		}
-
 		Map<Integer, Integer> minValues = new HashMap<>();
 		for (int i = 0; i < Math.pow(2, Constants.GAME_SIZE); i++) {
 			ticTacToeTemp = getTicTacToe(moves);
@@ -98,6 +81,23 @@ public class TicTacToeUtils {
 				if (gameStatus == Constants.MACHINE_WINS) {
 					bestMove = i;
 					logger.debug("findBestMove::machine::bestMove: " + bestMove);
+					return bestMove;
+				}
+			}
+		}
+
+		for (int i = 0; i < Math.pow(2, Constants.GAME_SIZE); i++) {
+			ticTacToeTemp = getTicTacToe(moves);
+			logger.debug("findBestMove::player::ticTacToeTemp: " + ticTacToeTemp.toString());
+			logger.debug("findBestMove::player::i: " + i);
+			logger.debug("findBestMove::player::getRow(" + i + "): " + getRow(i));
+			logger.debug("findBestMove::player::getCol(" + i + "): " + getCol(i));
+			if (!m.contains(i)) {
+				gameStatus = ticTacToeTemp.move(getRow(i), getCol(i), Constants.PLAYER);
+				logger.debug("findBestMove::player::gameStatus: " + gameStatus);
+				if (gameStatus == Constants.PLAYER_WINS) {
+					bestMove = i;
+					logger.debug("findBestMove::player::bestMove: " + bestMove);
 					return bestMove;
 				}
 			}
