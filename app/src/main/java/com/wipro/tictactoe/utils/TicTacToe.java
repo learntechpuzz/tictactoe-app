@@ -8,7 +8,7 @@ public class TicTacToe {
 	int diagRight;
 	int length;
 
-	/** Initialize */
+	/** Initialize with size n */
 	public TicTacToe(int n) {
 		rowCounter = new int[n];
 		colCounter = new int[n];
@@ -43,24 +43,4 @@ public class TicTacToe {
 			return 0;
 	}
 
-	public static void main(String[] args) {
-		TicTacToe obj = new TicTacToe(3);
-		int move1 = obj.move(0, 0, 1);
-		System.out.println("move1: " + move1);
-		int move2 = obj.move(0, 1, 2);
-		System.out.println("move2: " + move2);
-		int move3 = obj.move(0, 2, 1);
-		System.out.println("move3: " + move3);
-		int move4 = obj.move(2, 1, 2);
-		System.out.println("move4: " + move4);		
-		int move5 = obj.move(2, 2, 1);
-		System.out.println("move5: " + move5);
-		int move6 = obj.move(1, 0, 2);
-		System.out.println("move6: " + move6);
-		int move7 = obj.move(1, 1, 1);
-		System.out.println("move7: " + move7);
-		int move8 = obj.move(2, 0, 1);
-		System.out.println("move8: " + move8);
-		
-	}
 }
