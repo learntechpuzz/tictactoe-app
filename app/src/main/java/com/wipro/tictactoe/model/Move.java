@@ -46,4 +46,11 @@ public class Move {
 		this.player = player;
 	}
 
+	@Override
+	public String toString() {
+		return "Move [id=" + id + ", gameId=" + gameId + ", move=" + move + ", player=" + player + "]";
+	}
+	
+	
+
 }

@@ -57,4 +57,11 @@ public class Game {
 		this.status = status;
 	}
 
+	@Override
+	public String toString() {
+		return "Game [id=" + id + ", playerId=" + playerId + ", start=" + start + ", end=" + end + ", status=" + status
+				+ "]";
+	}
+
+	
 }

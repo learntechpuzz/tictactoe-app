@@ -34,14 +34,17 @@ public class TicTacToeUtils {
 			if (gameStatus != Constants.NO_ONE_WINS) // return game status if player or machine wins
 				return gameStatus;
 		}
+		logger.debug("gameStatus: " + gameStatus);
 		return gameStatus;
 
 	}
 
 	public int findBestMove(List<Move> moves) {
+		logger.debug("findBestMove::moves: " + moves.toString());
 		int bestMove = -1;
 		int gameStatus = Constants.NO_ONE_WINS;
-		TicTacToe ticTacToe = new TicTacToe(Constants.GAME_SIZE);
+		TicTacToe ticTacToe = null;
+
 		List<Integer> m = new ArrayList<>();
 
 		if (moves != null && moves.size() > 0) {
@@ -49,32 +52,42 @@ public class TicTacToeUtils {
 				m.add(move.getMove());
 			}
 		}
+		logger.debug("findBestMove::m: " + m.toString());
 
-		for (int i = 0; i < Constants.GAME_SIZE; i++) {
+		ticTacToe = new TicTacToe(Constants.GAME_SIZE);
+		for (int i = 0; i < Math.pow(2, Constants.GAME_SIZE); i++) {
 			if (!m.contains(i)) {
+				
 				gameStatus = ticTacToe.move(getRow(i), getCol(i), Constants.PLAYER);
+				logger.debug("findBestMove::player::gameStatus: " + gameStatus);
 				if (gameStatus == Constants.PLAYER_WINS) {
 					bestMove = i;
+					logger.debug("findBestMove::player::bestMove: " + bestMove);
 					return bestMove;
 				}
 			}
 		}
 
-		for (int i = 0; i < Constants.GAME_SIZE; i++) {
+		ticTacToe = new TicTacToe(Constants.GAME_SIZE);
+		for (int i = 0; i < Math.pow(2, Constants.GAME_SIZE); i++) {
 			if (!m.contains(i)) {
 				gameStatus = ticTacToe.move(getRow(i), getCol(i), Constants.MACHINE);
+				logger.debug("findBestMove::machine::gameStatus: " + gameStatus);
 				if (gameStatus == Constants.MACHINE_WINS) {
 					bestMove = i;
+					logger.debug("findBestMove::machine::bestMove: " + bestMove);
 					return bestMove;
 				}
 			}
 		}
 
+		logger.debug("findBestMove::minValues: " + ticTacToe.getMinValue().values());
 		int minValue = CommonUtils.findMin(ticTacToe.getMinValue().values());
+		logger.debug("findBestMove::minValue: " + minValue);
 		Set<Integer> bestMoves = CommonUtils.getKeysByValue(ticTacToe.getMinValue(), minValue);
+		logger.debug("findBestMove::bestMoves: " + bestMoves);
 		bestMove = bestMoves.stream().findAny().get();
-
-		logger.debug("bestMove: " + bestMove);
+		logger.debug("findBestMove::bestMove: " + bestMove);
 		return bestMove;
 	}
 

@@ -101,11 +101,16 @@ public class TicTacToeService {
 
 		MoveResponse response = null;
 
-		List<Move> moves = moveRepository.findByGameIdAndMove(gameId, move);
 		Optional<Game> game = gameRepository.findById(gameId);
+		logger.debug("game: " + game.get().toString());
+
+		List<Move> moves = moveRepository.findByGameIdAndMove(gameId, move);
+
+		logger.debug("findByGameIdAndMove::moves: " + moves.toString());
 
 		if (moves != null && moves.size() == 0) { // Valid move
 
+			moves = moveRepository.findByGameId(gameId);
 			response = new MoveResponse();
 
 			// Save player move

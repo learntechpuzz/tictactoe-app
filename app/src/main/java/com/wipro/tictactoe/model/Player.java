@@ -46,4 +46,10 @@ public class Player {
 		this.numberOfPlays = numberOfPlays;
 	}
 
+	@Override
+	public String toString() {
+		return "Player [id=" + id + ", playerName=" + playerName + ", numberOfWins=" + numberOfWins + ", numberOfPlays="
+				+ numberOfPlays + "]";
+	}
+
 }
