@@ -132,6 +132,7 @@ public class TicTacToeService {
 				gameRepository.save(game.get());
 				// return response
 				response.setStatus(Constants.PLAYER_WINS);
+				response.setStatus(Constants.NO_MOVE);
 				return response;
 			}
 
@@ -155,6 +156,7 @@ public class TicTacToeService {
 				game.get().setStatus(Constants.MACHINE_WINS);
 				game.get().setEnd(new Date());
 				gameRepository.save(game.get());
+				response.setStatus(Constants.MACHINE_WINS);
 			}
 
 		} else { // Invalid move

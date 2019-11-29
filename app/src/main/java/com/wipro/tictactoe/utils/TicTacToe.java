@@ -82,4 +82,11 @@ public class TicTacToe {
 		this.minValue = minValue;
 	}
 
+	@Override
+	public String toString() {
+		return "TicTacToe [rowCounter=" + Arrays.toString(rowCounter) + ", colCounter=" + Arrays.toString(colCounter)
+				+ ", diagLeft=" + diagLeft + ", diagRight=" + diagRight + ", size=" + size + ", minValue=" + minValue
+				+ "]";
+	}
+
 }
