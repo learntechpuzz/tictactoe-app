@@ -1,5 +1,9 @@
 package com.wipro.tictactoe.utils;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public class TicTacToe {
 
 	int[] rowCounter;
@@ -7,6 +11,7 @@ public class TicTacToe {
 	int diagLeft;
 	int diagRight;
 	int size;
+	Map<Integer, Integer> minValue;
 
 	public TicTacToe(int n) {
 		rowCounter = new int[n];
@@ -14,6 +19,7 @@ public class TicTacToe {
 		diagLeft = 0;
 		diagRight = 0;
 		size = n;
+		minValue = new HashMap<>();
 	}
 
 	/**
@@ -32,6 +38,11 @@ public class TicTacToe {
 			diagLeft += move;
 		if (row == size - col - 1)
 			diagRight += move;
+
+		if (player == Constants.MACHINE)
+			minValue.put(move,
+					CommonUtils.findMin(Arrays.asList(rowCounter[row], colCounter[col], diagLeft, diagRight)));
+
 		if (rowCounter[row] == size || colCounter[col] == size || diagLeft == size || diagRight == size)
 			return Constants.PLAYER_WINS;
 		else if ((rowCounter[row] == -size || colCounter[col] == -size || diagLeft == -size || diagRight == -size))
@@ -40,5 +51,8 @@ public class TicTacToe {
 			return Constants.NO_ONE_WINS;
 	}
 
+	public Map<Integer, Integer> getMinValue() {
+		return minValue;
+	}
 
 }

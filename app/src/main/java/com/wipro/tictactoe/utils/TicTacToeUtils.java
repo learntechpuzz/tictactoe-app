@@ -2,13 +2,18 @@ package com.wipro.tictactoe.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.wipro.tictactoe.model.Move;
 
 @Component
 public class TicTacToeUtils {
+
+	private static final Logger logger = LoggerFactory.getLogger(TicTacToeUtils.class);
 
 	/**
 	 * Check game status
@@ -64,6 +69,12 @@ public class TicTacToeUtils {
 				}
 			}
 		}
+
+		int minValue = CommonUtils.findMin(ticTacToe.getMinValue().values());
+		Set<Integer> bestMoves = CommonUtils.getKeysByValue(ticTacToe.getMinValue(), minValue);
+		bestMove = bestMoves.stream().findAny().get();
+
+		logger.debug("bestMove: " + bestMove);
 		return bestMove;
 	}
 
@@ -86,4 +97,5 @@ public class TicTacToeUtils {
 	public int getCol(int move) {
 		return (move % Constants.GAME_SIZE);
 	}
+
 }
