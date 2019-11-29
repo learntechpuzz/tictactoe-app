@@ -17,14 +17,14 @@ public class TicTacToe {
 	}
 
 	/**
-	 * Move({row}, {col}, {player}) - Check game status for the given move
+	 * Calculate game status
 	 * 
 	 * @param row
 	 * @param col
 	 * @param player (1 - human, -1 - machine)
 	 * @return 0: No one wins 1: Player1 wins 2: Player2 wins
 	 */
-	public int move(int row, int col, int player) {
+	public int calculateGameStatus(int row, int col, int player) {
 		int move = player == 1 ? 1 : -1;
 		rowCounter[row] += move;
 		colCounter[col] += move;

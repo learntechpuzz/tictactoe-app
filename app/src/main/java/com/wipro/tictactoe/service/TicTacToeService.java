@@ -37,8 +37,7 @@ public class TicTacToeService {
 	MoveRepository moveRepository;
 
 	/**
-	 * startGame ({playerName}) - Add a new player and create a new game for the
-	 * player
+	 * Add a new player and create a new game for the player
 	 * 
 	 * @param playerName
 	 * @return
@@ -83,8 +82,7 @@ public class TicTacToeService {
 	}
 
 	/**
-	 * move({gameId},{move}) - Save player move, calculate machine move (AI) and
-	 * save, find game status
+	 * Save player move, calculate machine move along with the game status
 	 * 
 	 * 
 	 * @param gameId
