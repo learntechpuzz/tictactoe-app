@@ -54,7 +54,7 @@ public class TicTacToeUtils {
 				}
 			}
 		}
-		
+
 		for (int i = 0; i < Constants.GAME_SIZE; i++) {
 			if (!m.contains(i)) {
 				gameStatus = ticTacToe.move(getRow(i), getCol(i), Constants.MACHINE);
@@ -63,7 +63,7 @@ public class TicTacToeUtils {
 					return bestMove;
 				}
 			}
-		}		
+		}
 		return bestMove;
 	}
 
