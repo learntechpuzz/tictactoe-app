@@ -93,12 +93,10 @@ public class TicTacToeService {
 	 * @param gameId
 	 * @param move
 	 * @return
-	 * @throws CloneNotSupportedException
 	 */
 	public MoveResponse move(int gameId, int move) {
 
 		logger.debug("gameId: " + gameId);
-
 		logger.debug("move: " + move);
 
 		MoveResponse response = null;
