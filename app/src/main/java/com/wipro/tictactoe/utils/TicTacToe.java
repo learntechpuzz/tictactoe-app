@@ -1,8 +1,6 @@
 package com.wipro.tictactoe.utils;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +14,7 @@ public class TicTacToe {
 	int diagLeft;
 	int diagRight;
 	int size;
-	Map<Integer, Integer> minValue;
+	int minValue;
 
 	public TicTacToe(int n) {
 		rowCounter = new int[n];
@@ -24,7 +22,17 @@ public class TicTacToe {
 		diagLeft = 0;
 		diagRight = 0;
 		size = n;
-		minValue = new HashMap<>();
+		minValue = 0;
+	}
+
+	public TicTacToe(int[] rowCounter, int[] colCounter, int diagLeft, int diagRight, int size, int minValue) {
+		super();
+		this.rowCounter = rowCounter;
+		this.colCounter = colCounter;
+		this.diagLeft = diagLeft;
+		this.diagRight = diagRight;
+		this.size = size;
+		this.minValue = minValue;
 	}
 
 	/**
@@ -56,7 +64,7 @@ public class TicTacToe {
 		logger.debug("move::diagRight: " + diagLeft);
 		logger.debug("move::minValue: "
 				+ CommonUtils.findMin(Arrays.asList(rowCounter[row], colCounter[col], diagLeft, diagRight)));
-		minValue.put(move, CommonUtils.findMin(Arrays.asList(rowCounter[row], colCounter[col], diagLeft, diagRight)));
+		minValue = CommonUtils.findMin(Arrays.asList(rowCounter[row], colCounter[col], diagLeft, diagRight));
 
 		if (rowCounter[row] == size || colCounter[col] == size || diagLeft == size || diagRight == size)
 			return Constants.PLAYER_WINS;
@@ -66,8 +74,12 @@ public class TicTacToe {
 			return Constants.NO_ONE_WINS;
 	}
 
-	public Map<Integer, Integer> getMinValue() {
+	public int getMinValue() {
 		return minValue;
+	}
+
+	public void setMinValue(int minValue) {
+		this.minValue = minValue;
 	}
 
 }

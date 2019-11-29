@@ -1,7 +1,10 @@
 package com.wipro.tictactoe.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -39,28 +42,39 @@ public class TicTacToeUtils {
 
 	}
 
+	public TicTacToe getTicTacToe(List<Move> moves) {
+		TicTacToe ticTacToe = new TicTacToe(Constants.GAME_SIZE);
+		if (moves != null && moves.size() > 0) {
+			for (Move move : moves) {
+				ticTacToe.move(getRow(move.getMove()), getCol(move.getMove()), move.getPlayer());
+			}
+		}
+		return ticTacToe;
+	}
+
 	public int findBestMove(List<Move> moves) {
 		logger.debug("findBestMove::moves: " + moves.toString());
 		int bestMove = -1;
 		int gameStatus = Constants.NO_ONE_WINS;
-		TicTacToe ticTacToe = null;
+		TicTacToe ticTacToe = new TicTacToe(Constants.GAME_SIZE);
+		TicTacToe ticTacToeTemp = null;
 
 		List<Integer> m = new ArrayList<>();
-
 		if (moves != null && moves.size() > 0) {
 			for (Move move : moves) {
+				ticTacToe.move(getRow(move.getMove()), getCol(move.getMove()), move.getPlayer());
 				m.add(move.getMove());
 			}
 		}
-		logger.debug("findBestMove::m: " + m.toString());
 
-		ticTacToe = new TicTacToe(Constants.GAME_SIZE);
 		for (int i = 0; i < Math.pow(2, Constants.GAME_SIZE); i++) {
+			ticTacToeTemp = getTicTacToe(moves);
+			logger.debug("findBestMove::player::ticTacToeTemp: " + ticTacToeTemp.toString());
+			logger.debug("findBestMove::player::i: " + i);
+			logger.debug("findBestMove::player::getRow(" + i + "): " + getRow(i));
+			logger.debug("findBestMove::player::getCol(" + i + "): " + getCol(i));
 			if (!m.contains(i)) {
-				logger.debug("findBestMove::player::i: " + i);
-				logger.debug("findBestMove::player::getRow("+i+"): " + getRow(i));
-				logger.debug("findBestMove::player::getCol("+i+"): " + getCol(i));
-				gameStatus = ticTacToe.move(getRow(i), getCol(i), Constants.PLAYER);	
+				gameStatus = ticTacToeTemp.move(getRow(i), getCol(i), Constants.PLAYER);
 				logger.debug("findBestMove::player::gameStatus: " + gameStatus);
 				if (gameStatus == Constants.PLAYER_WINS) {
 					bestMove = i;
@@ -70,13 +84,16 @@ public class TicTacToeUtils {
 			}
 		}
 
-		ticTacToe = new TicTacToe(Constants.GAME_SIZE);
+		Map<Integer, Integer> minValues = new HashMap<>();
 		for (int i = 0; i < Math.pow(2, Constants.GAME_SIZE); i++) {
+			ticTacToeTemp = getTicTacToe(moves);
+			logger.debug("findBestMove::machine::ticTacToeTemp: " + ticTacToeTemp.toString());
+			logger.debug("findBestMove::machine::i: " + i);
+			logger.debug("findBestMove::machine::getRow(" + i + "): " + getRow(i));
+			logger.debug("findBestMove::machine::getCol(" + i + "): " + getCol(i));
 			if (!m.contains(i)) {
-				logger.debug("findBestMove::machine::i: " + i);
-				logger.debug("findBestMove::machine::getRow("+i+"): " + getRow(i));
-				logger.debug("findBestMove::machine::getCol("+i+"): " + getCol(i));
-				gameStatus = ticTacToe.move(getRow(i), getCol(i), Constants.MACHINE);
+				gameStatus = ticTacToeTemp.move(getRow(i), getCol(i), Constants.MACHINE);
+				minValues.put(i, ticTacToeTemp.getMinValue());
 				logger.debug("findBestMove::machine::gameStatus: " + gameStatus);
 				if (gameStatus == Constants.MACHINE_WINS) {
 					bestMove = i;
@@ -86,10 +103,10 @@ public class TicTacToeUtils {
 			}
 		}
 
-		logger.debug("findBestMove::minValues: " + ticTacToe.getMinValue().values());
-		int minValue = CommonUtils.findMin(ticTacToe.getMinValue().values());
+		logger.debug("findBestMove::minValues: " + minValues.values());
+		int minValue = CommonUtils.findMin(minValues.values());
 		logger.debug("findBestMove::minValue: " + minValue);
-		Set<Integer> bestMoves = CommonUtils.getKeysByValue(ticTacToe.getMinValue(), minValue);
+		Set<Integer> bestMoves = CommonUtils.getKeysByValue(minValues, minValue);
 		logger.debug("findBestMove::bestMoves: " + bestMoves);
 		bestMove = bestMoves.stream().findAny().get();
 		logger.debug("findBestMove::bestMove: " + bestMove);
