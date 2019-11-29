@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wipro.tictactoe.exception.ErrorMessages;
+import com.wipro.tictactoe.exception.GameNotFoundException;
 import com.wipro.tictactoe.exception.MoveNotAllowedException;
 import com.wipro.tictactoe.exception.PlayerAlreadyExistsException;
 import com.wipro.tictactoe.model.Game;
@@ -103,13 +104,15 @@ public class TicTacToeService {
 		MoveResponse response = null;
 
 		Optional<Game> game = gameRepository.findById(gameId);
-		logger.debug("game: " + game.get().toString());
+		if (!game.isPresent())
+			throw new GameNotFoundException(ErrorMessages.GAME_NOT_FOUND.getErrorMessage() + " (" + gameId + ")");
 
 		List<Move> moves = moveRepository.findByGameIdAndMove(gameId, move);
 
 		logger.debug("findByGameIdAndMove::moves: " + moves.toString());
 
-		if (moves != null && moves.size() == 0) { // Valid move
+		if ((moves != null && moves.size() == 0) && move <= Math.pow(2, Constants.GAME_SIZE)
+				&& game.get().getStatus() == Constants.NO_ONE_WINS) { // Valid move
 
 			moves = moveRepository.findByGameId(gameId);
 			response = new MoveResponse();

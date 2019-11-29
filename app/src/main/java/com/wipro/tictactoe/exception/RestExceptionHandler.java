@@ -49,6 +49,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	/**
+	 * Handle game not found exception
+	 * 
+	 * @param ex
+	 * @return
+	 */
+	@ExceptionHandler(GameNotFoundException.class)
+	public ResponseEntity<Object> handleGameNotFoundException(GameNotFoundException ex) {
+		ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
+	}
+
+	/**
 	 * Handle all exception
 	 * 
 	 * @param ex
