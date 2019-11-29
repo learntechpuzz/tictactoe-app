@@ -57,8 +57,10 @@ public class TicTacToeUtils {
 		ticTacToe = new TicTacToe(Constants.GAME_SIZE);
 		for (int i = 0; i < Math.pow(2, Constants.GAME_SIZE); i++) {
 			if (!m.contains(i)) {
-				
-				gameStatus = ticTacToe.move(getRow(i), getCol(i), Constants.PLAYER);
+				logger.debug("findBestMove::player::i: " + i);
+				logger.debug("findBestMove::player::getRow("+i+"): " + getRow(i));
+				logger.debug("findBestMove::player::getCol("+i+"): " + getCol(i));
+				gameStatus = ticTacToe.move(getRow(i), getCol(i), Constants.PLAYER);	
 				logger.debug("findBestMove::player::gameStatus: " + gameStatus);
 				if (gameStatus == Constants.PLAYER_WINS) {
 					bestMove = i;
@@ -71,6 +73,9 @@ public class TicTacToeUtils {
 		ticTacToe = new TicTacToe(Constants.GAME_SIZE);
 		for (int i = 0; i < Math.pow(2, Constants.GAME_SIZE); i++) {
 			if (!m.contains(i)) {
+				logger.debug("findBestMove::machine::i: " + i);
+				logger.debug("findBestMove::machine::getRow("+i+"): " + getRow(i));
+				logger.debug("findBestMove::machine::getCol("+i+"): " + getCol(i));
 				gameStatus = ticTacToe.move(getRow(i), getCol(i), Constants.MACHINE);
 				logger.debug("findBestMove::machine::gameStatus: " + gameStatus);
 				if (gameStatus == Constants.MACHINE_WINS) {
