@@ -6,24 +6,22 @@ public class TicTacToe {
 	int[] colCounter;
 	int diagLeft;
 	int diagRight;
-	int length;
+	int size;
 
-	/** Initialize with size n */
 	public TicTacToe(int n) {
 		rowCounter = new int[n];
 		colCounter = new int[n];
 		diagLeft = 0;
 		diagRight = 0;
-		length = n;
-
+		size = n;
 	}
 
 	/**
-	 * Player {player} make a move at ({row}, {col})
+	 * Move({row}, {col}, {player}) - Check game status for the given move
 	 * 
 	 * @param row
 	 * @param col
-	 * @param player
+	 * @param player (1 - human, -1 - machine)
 	 * @return 0: No one wins 1: Player1 wins 2: Player2 wins
 	 */
 	public int move(int row, int col, int player) {
@@ -32,15 +30,14 @@ public class TicTacToe {
 		colCounter[col] += move;
 		if (row == col)
 			diagLeft += move;
-		if (row == length - col - 1)
+		if (row == size - col - 1)
 			diagRight += move;
-		if (rowCounter[row] == length || colCounter[col] == length || diagLeft == length || diagRight == length)
-			return 1;
-		else if ((rowCounter[row] == -length || colCounter[col] == -length || diagLeft == -length
-				|| diagRight == -length))
-			return 2;
+		if (rowCounter[row] == size || colCounter[col] == size || diagLeft == size || diagRight == size)
+			return Constants.PLAYER_WINS;
+		else if ((rowCounter[row] == -size || colCounter[col] == -size || diagLeft == -size || diagRight == -size))
+			return Constants.MACHINE_WINS;
 		else
-			return 0;
+			return Constants.NO_ONE_WINS;
 	}
 
 }

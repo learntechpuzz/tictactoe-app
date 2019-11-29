@@ -1,6 +1,5 @@
 package com.wipro.tictactoe.service;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +36,13 @@ public class TicTacToeService {
 	@Autowired
 	MoveRepository moveRepository;
 
+	/**
+	 * startGame ({playerName}) - Add a new player and create a new game for the
+	 * player
+	 * 
+	 * @param playerName
+	 * @return
+	 */
 	public StartResponse startGame(String playerName) {
 
 		logger.debug("playerName: " + playerName);
@@ -76,6 +82,15 @@ public class TicTacToeService {
 		return response;
 	}
 
+	/**
+	 * move({gameId},{move}) - Save player move, calculate machine move (AI) and
+	 * save, find game status
+	 * 
+	 * 
+	 * @param gameId
+	 * @param move
+	 * @return
+	 */
 	public MoveResponse move(int gameId, int move) {
 
 		logger.debug("gameId: " + gameId);
@@ -88,7 +103,7 @@ public class TicTacToeService {
 
 		if (moves != null && moves.size() == 0) { // Valid move
 
-			// Add a new player move
+			// Save player move
 			Move playerMove = new Move();
 			playerMove.setGameId(gameId);
 			playerMove.setMove(move);
