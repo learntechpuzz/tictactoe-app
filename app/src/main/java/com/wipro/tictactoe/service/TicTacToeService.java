@@ -21,6 +21,7 @@ import com.wipro.tictactoe.repository.PlayerRepository;
 import com.wipro.tictactoe.response.MoveResponse;
 import com.wipro.tictactoe.response.StartResponse;
 import com.wipro.tictactoe.utils.Constants;
+import com.wipro.tictactoe.utils.TicTacToeUtils;
 
 @Service
 public class TicTacToeService {
@@ -35,6 +36,9 @@ public class TicTacToeService {
 
 	@Autowired
 	MoveRepository moveRepository;
+
+	@Autowired
+	TicTacToeUtils ticTacToeUtils;
 
 	/**
 	 * Add a new player and create a new game for the player
@@ -98,6 +102,7 @@ public class TicTacToeService {
 		MoveResponse response = null;
 
 		List<Move> moves = moveRepository.findByGameIdAndMove(gameId, move);
+		Optional<Game> game = gameRepository.findById(gameId);
 
 		if (moves != null && moves.size() == 0) { // Valid move
 
@@ -105,10 +110,27 @@ public class TicTacToeService {
 			Move playerMove = new Move();
 			playerMove.setGameId(gameId);
 			playerMove.setMove(move);
-			playerMove.setPlayer(Constants.PLAYER); // Human
+			playerMove.setPlayer(Constants.PLAYER); // Player
 			Move newPlayerMove = moveRepository.save(playerMove);
 
-			Optional<Game> game = gameRepository.findById(gameId);
+			moves = moveRepository.findByGameIdAndMove(gameId, move);
+
+			if (ticTacToeUtils.checkGameStatus(moves) == Constants.PLAYER_WINS) {
+				game.get().setStatus(Constants.PLAYER_WINS);
+				game.get().setEnd(new Date());
+				gameRepository.save(game.get());
+			}
+
+			if (ticTacToeUtils.checkGameStatus(moves) == Constants.NO_ONE_WINS) {
+				
+			}
+			
+			if (ticTacToeUtils.checkGameStatus(moves) == Constants.MACHINE_WINS) {
+				game.get().setStatus(Constants.MACHINE_WINS);
+				game.get().setEnd(new Date());
+				gameRepository.save(game.get());
+			}
+
 			response = new MoveResponse();
 			response.setStatus(game.get().getStatus());
 			response.setMove(newPlayerMove);
