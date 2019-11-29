@@ -108,7 +108,8 @@ public class TicTacToeUtils {
 		logger.debug("findBestMove::minValue: " + minValue);
 		Set<Integer> bestMoves = CommonUtils.getKeysByValue(minValues, minValue);
 		logger.debug("findBestMove::bestMoves: " + bestMoves);
-		bestMove = bestMoves.stream().findAny().get();
+		if (bestMoves != null && bestMoves.size() > 0)
+			bestMove = bestMoves.stream().findAny().get();
 		logger.debug("findBestMove::bestMove: " + bestMove);
 		return bestMove;
 	}
