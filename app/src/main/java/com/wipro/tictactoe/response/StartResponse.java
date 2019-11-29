@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.wipro.tictactoe.model.Move;
 
-public class GameResponse {
+public class StartResponse {
 
 	private int playerId;
 	private int gameId;

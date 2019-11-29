@@ -3,6 +3,7 @@ package com.wipro.tictactoe.exception;
 public enum ErrorMessages {
 	
 	PLAYER_ALREADY_EXISTS("Player already exists"),
+	MOVE_NOT_ALLOWED("Move not allowed"),
 	INTERNAL_SERVER_ERROR("Something went wrong. Please repeat this operation later.");
 
 	private String errorMessage;

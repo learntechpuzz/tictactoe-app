@@ -1,7 +1,9 @@
 package com.wipro.tictactoe.service;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,13 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wipro.tictactoe.exception.ErrorMessages;
+import com.wipro.tictactoe.exception.MoveNotAllowedException;
 import com.wipro.tictactoe.exception.PlayerAlreadyExistsException;
 import com.wipro.tictactoe.model.Game;
+import com.wipro.tictactoe.model.Move;
 import com.wipro.tictactoe.model.Player;
 import com.wipro.tictactoe.repository.GameRepository;
 import com.wipro.tictactoe.repository.MoveRepository;
 import com.wipro.tictactoe.repository.PlayerRepository;
-import com.wipro.tictactoe.response.GameResponse;
+import com.wipro.tictactoe.response.MoveResponse;
+import com.wipro.tictactoe.response.StartResponse;
+import com.wipro.tictactoe.utils.Constants;
 
 @Service
 public class TicTacToeService {
@@ -31,39 +37,73 @@ public class TicTacToeService {
 	@Autowired
 	MoveRepository moveRepository;
 
-	public GameResponse startGame(String playerName) {
+	public StartResponse startGame(String playerName) {
 
 		logger.debug("playerName: " + playerName);
 
-		GameResponse gameResponse = null;
+		StartResponse response = null;
 
 		List<Player> players = playerRepository.findByPlayerName(playerName);
 
-		logger.debug("players: " + players);
+		if (players != null && players.size() == 0) { // New player
 
-		if (players.size() == 0) { // New Player
-
-			// Create a new player
+			// Add a new player
 			Player player = new Player();
 			player.setPlayerName(playerName);
 			player.setNumberOfPlays(1);
 			player.setNumberOfWins(0);
 			Player newPlayer = playerRepository.save(player);
 
-			// Create a new game
+			// Create a new game for the player
 			Game game = new Game();
 			game.setPlayerId(newPlayer.getId());
 			game.setStart(new Date());
+			game.setStatus(Constants.NO_ONE_WINS);
 			Game newGame = gameRepository.save(game);
 
-			gameResponse = new GameResponse();
-			gameResponse.setGameId(newGame.getId());
-			gameResponse.setPlayerId(newPlayer.getId());
+			// game response
+			response = new StartResponse();
+			response.setPlayerId(newPlayer.getId());
+			response.setGameId(newGame.getId());
+			response.setMoves(moveRepository.findByGameId(newGame.getId()));
+			response.setStatus(newGame.getStatus());
 
 		} else { // Player already exists
-			throw new PlayerAlreadyExistsException(ErrorMessages.PLAYER_ALREADY_EXISTS.getErrorMessage() + " (" + playerName + ")");
+			throw new PlayerAlreadyExistsException(
+					ErrorMessages.PLAYER_ALREADY_EXISTS.getErrorMessage() + " (" + playerName + ")");
 		}
 
-		return gameResponse;
+		return response;
+	}
+
+	public MoveResponse move(int gameId, int move) {
+
+		logger.debug("gameId: " + gameId);
+
+		logger.debug("move: " + move);
+
+		MoveResponse response = null;
+
+		List<Move> moves = moveRepository.findByGameIdAndMove(gameId, move);
+
+		if (moves != null && moves.size() == 0) { // Valid move
+
+			// Add a new player move
+			Move playerMove = new Move();
+			playerMove.setGameId(gameId);
+			playerMove.setMove(move);
+			playerMove.setPlayer(Constants.PLAYER); // Human
+			Move newPlayerMove = moveRepository.save(playerMove);
+
+			Optional<Game> game = gameRepository.findById(gameId);
+			response = new MoveResponse();
+			response.setStatus(game.get().getStatus());
+			response.setMove(newPlayerMove);
+
+		} else { // Invalid move
+			throw new MoveNotAllowedException(ErrorMessages.MOVE_NOT_ALLOWED.getErrorMessage() + " (" + move + ")");
+		}
+
+		return response;
 	}
 }

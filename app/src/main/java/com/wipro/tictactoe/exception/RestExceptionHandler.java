@@ -16,4 +16,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
 		return new ResponseEntity(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+
+	@ExceptionHandler(MoveNotAllowedException.class)
+	public ResponseEntity<Object> handleMoveNotAllowedException(MoveNotAllowedException ex) {
+		ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+		return new ResponseEntity(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
 }
