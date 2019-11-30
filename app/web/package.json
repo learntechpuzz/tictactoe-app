@@ -2,8 +2,9 @@
   "name": "tictactoe-ui",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8080",
+  "proxy": "http://localhost:7002",
   "dependencies": {
+    "availity-reactstrap-validation": "^2.6.1",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "react": "^16.12.0",
