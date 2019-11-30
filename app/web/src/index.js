@@ -93,6 +93,7 @@ class Game extends React.Component {
 
     render() {
         const { playerName, playerId, error, squares } = this.state;
+
         return (
             <Container>
                 <Row>
@@ -107,47 +108,50 @@ class Game extends React.Component {
                         </Col>
                     </Row>
                 ) : null}
-                
-                    <Row>
-                        <Col sm={10}>
-                            <AvForm onValidSubmit={this.onSubmit}>
-                                <AvGroup row>
-                                    <Col sm={5}>
-                                        <AvInput required type="text" name="playerName" id="playerName" value={playerName} onChange={this.onChange} placeholder="Enter player name" />
-                                        <AvFeedback>Player name is required!</AvFeedback>
-                                    </Col>
-                                    <Col sm={5}>
-                                        <Button type="submit" color="primary" outline>START</Button>
-                                    </Col>
-                                </AvGroup>
-                            </AvForm>
-                        </Col>
-                    </Row>
-                    {(playerId !== -1) ? (
 
-                        <div>
-                            <Row>
-                                <Col sm={10}>
-                                    <h5>
-                                        Weclome {playerName}!
-                                    </h5>
+                <Row>
+                    <Col sm={10}>
+                        <AvForm onValidSubmit={this.onSubmit}>
+                            <AvGroup row>
+                                <Col sm={5}>
+                                    <AvInput required type="text" name="playerName" id="playerName" value={playerName} onChange={this.onChange} placeholder="Enter player name" />
+                                    <AvFeedback>Player name is required!</AvFeedback>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col sm={10}>
-                                    <div className="game">
-                                        <div className="game-board">
-                                            <Board
-                                                squares={squares}
-                                                onClick={i => this.handleClick(i)}
-                                            />
-                                        </div>
+                                <Col sm={5}>
+                                    <Button type="submit" color="primary" outline>START</Button>
+                                </Col>
+                            </AvGroup>
+                        </AvForm>
+                    </Col>
+                </Row>
+                {(playerId !== -1) ? (
+
+                    <div>
+                        <Row>
+                            <Col sm={10}>
+                                <div className="game">
+                                    <div className="game-board">
+                                        <Board
+                                            squares={squares}
+                                            onClick={i => this.handleClick(i)}
+                                        />
                                     </div>
-                                </Col>
-                            </Row>
-                        </div>
+                                    <div className="game-info">
+                                        <row>
+                                            <h6>X - Player</h6>
+                                        </row>
+                                        <row>
+                                            <h6> O - Machine</h6>
+                                        </row>
+                                    </div>
 
-                    ) : null }
+                                </div>
+                            </Col>
+                        </Row>
+
+                    </div>
+
+                ) : null}
 
             </Container>
         );
