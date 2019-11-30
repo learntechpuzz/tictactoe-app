@@ -12,7 +12,7 @@ RUN mvn clean package
 FROM java:8-jdk-alpine
 WORKDIR /static
 COPY --from=tictactoe-ui /app/tictactoe-ui/build/ .
-VOLUMES ["/app/tictactoe"]
+VOLUME ["/app/tictactoe"]
 WORKDIR /app
 COPY --from=tictactoe-service /app/tictactoe-service/target/tictactoe-service-0.0.1-SNAPSHOT.jar .
 CMD ["java", "-jar", "/app/tictactoe-service-0.0.1-SNAPSHOT.jar"]
