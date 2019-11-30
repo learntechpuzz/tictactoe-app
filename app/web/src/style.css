@@ -39,7 +39,7 @@ h1, p {
     outline: none;
   }
   
-  .kbd-navigation .square:focus {
+  .square:focus {
     background: #ddd;
   }
   
