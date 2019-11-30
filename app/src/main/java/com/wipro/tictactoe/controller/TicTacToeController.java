@@ -20,6 +20,12 @@ public class TicTacToeController {
 		return service.startGame(playerName);
 	}
 
+	@GetMapping("/restart")
+	public StartResponse sum(@RequestParam(value = "playerId", required = true) int playerId,
+			@RequestParam(value = "gameId", required = true) int gameId) {
+		return service.restartGame(playerId, gameId);
+	}
+
 	@GetMapping("/move")
 	public MoveResponse move(@RequestParam(value = "gameId", required = true) int gameId,
 			@RequestParam(value = "move", required = true) int move) {

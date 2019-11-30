@@ -66,17 +66,43 @@ class Game extends React.Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    onSubmit = () => {
+    startGame = () => {
         const { playerName } = this.state;
 
         axios.get('/start', { params: { playerName } })
             .then((result) => {
-                this.setState({ playerId: result.data.playerId, gameId: result.data.gameId, status: result.data.status, error: '' });
+
+                let squares = [];
+                result.data.moves.map((move) => {
+                    if(move.player === 0){
+                        squares[move.move] = 'O'
+                    }else{
+                        squares[move.move] = 'X'
+                    }
+                    return squares;
+                  });
+
+                  console.log(squares);
+
+                this.setState({ squares: squares, playerId: result.data.playerId, gameId: result.data.gameId, status: result.data.status, error: '' });
             })
             .catch(error => {
                 this.setState({ error: error.response.data.message })
             });
     }
+
+    restartGame = () => {
+        const { playerId, gameId } = this.state;
+
+        axios.get('/restart', { params: { playerId, gameId } })
+            .then((result) => {
+                this.setState({ squares: Array(9).fill(null), playerId: result.data.playerId, gameId: result.data.gameId, status: result.data.status, error: '' });
+            })
+            .catch(error => {
+                this.setState({ error: error.response.data.message })
+            });
+    }
+
 
     move(i) {
         const { gameId, status } = this.state;
@@ -123,7 +149,7 @@ class Game extends React.Component {
 
                 <Row>
                     <Col sm={10}>
-                        <AvForm onValidSubmit={this.onSubmit}>
+                        <AvForm onValidSubmit={this.startGame}>
                             <AvGroup row>
                                 <Col sm={5}>
                                     <AvInput required type="text" name="playerName" id="playerName" value={playerName} onChange={this.onChange} placeholder="Enter player name" />
@@ -141,21 +167,21 @@ class Game extends React.Component {
                         {(status === 1) ? (
                             <Row>
                                 <Col sm={10}>
-                                    <Alert color="success"><h6>You Won!</h6></Alert>
+                                    <Alert color="success"><h4 className="alert-heading">You Won. Well done!</h4></Alert>
                                 </Col>
                             </Row>
                         ) : null}
                         {(status === 2) ? (
                             <Row>
                                 <Col sm={10}>
-                                    <Alert color="primary"><h6>Machine Won!</h6></Alert>
+                                <Alert color="primary"><h4 className="alert-heading">Machine Won. Try again!</h4></Alert>
                                 </Col>
                             </Row>
                         ) : null}
                         {(status === 0) ? (
                             <Row>
                                 <Col sm={10}>
-                                    <Alert color="secondary"><h6>No One Wins!</h6></Alert>
+                                <Alert color="secondary"><h4 className="alert-heading">No One Wins. Draw!</h4></Alert>
                                 </Col>
                             </Row>
                         ) : null}
@@ -176,6 +202,11 @@ class Game extends React.Component {
                                 </Row>
                             </div>
 
+                        </div>
+                        <div className="game-controls" >
+                            <a href="/#" onClick={this.restartGame}>
+                                RESTART GAME
+                            </a>
                         </div>
                     </div>
 

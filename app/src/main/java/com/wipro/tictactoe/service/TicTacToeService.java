@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import com.wipro.tictactoe.exception.ErrorMessages;
 import com.wipro.tictactoe.exception.GameNotFoundException;
 import com.wipro.tictactoe.exception.MoveNotAllowedException;
-import com.wipro.tictactoe.exception.PlayerAlreadyExistsException;
-import com.wipro.tictactoe.exception.PlayerNotFoundException;
 import com.wipro.tictactoe.model.Game;
 import com.wipro.tictactoe.model.Move;
 import com.wipro.tictactoe.model.Player;
@@ -192,37 +190,43 @@ public class TicTacToeService {
 	}
 
 	/**
-	 * Restart the game for a player
+	 * Restart the game
 	 * 
-	 * @param playerId
+	 * @param gameId
 	 * @return
 	 */
 	@Transactional
-	public StartResponse restartGame(int playerId) {
+	public StartResponse restartGame(int playerId, int gameId) {
 
 		logger.debug("playerId: " + playerId);
+		logger.debug("gameId: " + gameId);
 
 		StartResponse response = null;
 
-		Optional<Player> player = playerRepository.findById(playerId);
+		Optional<Game> game = gameRepository.findById(gameId);
 
-		if (player.isPresent()) { // New player
+		if (game.isPresent()) { // New player
 
-			// Create a new game for the player
-			Game game = new Game();
-			game.setPlayerId(playerId);
-			game.setStart(new Date());
-			game.setStatus(Constants.GAME_IN_PROGRESS);
-			Game newGame = gameRepository.save(game);
+			// Update game
+			game.get().setStart(new Date());
+			game.get().setEnd(null);
+			game.get().setStatus(Constants.GAME_IN_PROGRESS);
+			Game updatedGame = gameRepository.save(game.get());
+
+			// Find list of moves for this game
+			List<Move> moves = moveRepository.findByGameId(gameId);
+
+			// Delete all moves
+			moveRepository.deleteAll(moves);
 
 			// game response
 			response = new StartResponse();
 			response.setPlayerId(playerId);
-			response.setGameId(newGame.getId());
-			response.setStatus(newGame.getStatus());
+			response.setGameId(updatedGame.getId());
+			response.setStatus(updatedGame.getStatus());
 
-		} else { // Player not found
-			throw new PlayerNotFoundException(ErrorMessages.PLAYER_NOT_FOUND.getErrorMessage() + " (" + playerId + ")");
+		} else { // Game not found
+			throw new GameNotFoundException(ErrorMessages.GAME_NOT_FOUND.getErrorMessage() + " (" + gameId + ")");
 		}
 
 		return response;

@@ -25,18 +25,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	/**
-	 * Handle player already exists exception
-	 * 
-	 * @param ex
-	 * @return
-	 */
-	@ExceptionHandler(PlayerAlreadyExistsException.class)
-	public ResponseEntity<Object> handlePlayerAlreadyExistsException(PlayerAlreadyExistsException ex) {
-		ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
-	}
-
-	/**
 	 * Handle move not all allowed exception
 	 * 
 	 * @param ex
