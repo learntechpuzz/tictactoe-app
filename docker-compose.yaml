@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  tictactoe-app:
+    build: .
+    volumes:
+      - tictactoe-data:/app/tictactoe
+
+volumes:
+  tictactoe-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /app/tictactoe
