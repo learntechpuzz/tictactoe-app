@@ -55,9 +55,8 @@ class Game extends React.Component {
             playerName: '',
             playerId: -1,
             gameId: -1,
+            move: -1,
             squares: Array(9).fill(null),
-            stepNumber: -1,
-            xIsNext: true,
             status: -1,
             error: ''
         };
@@ -79,20 +78,33 @@ class Game extends React.Component {
             });
     }
 
-    handleClick(i) {
+    move(i) {
+        const { gameId, status } = this.state;
+
         const squares = this.state.squares.slice();
-        if (squares[i]) {
+        if (squares[i] || status !== -1) {
             return;
         }
-        squares[i] = this.state.xIsNext ? "X" : "O";
-        this.setState({
-            squares: squares,
-            xIsNext: !this.state.xIsNext
-        });
+        squares[i] = "X";
+        let move = i;
+        axios.get('/move', { params: { gameId, move } })
+            .then((result) => {
+                this.setState({ status: result.data.status, error: '' });
+                if (result.data.status === 2 || result.data.status === -1)
+                    squares[result.data.move.move] = "O";
+                this.setState({
+                    squares: squares
+                });
+            })
+            .catch(error => {
+                this.setState({ error: error.response.data.message })
+            });
+
+
     }
 
     render() {
-        const { playerName, playerId, error, squares } = this.state;
+        const { playerName, playerId, error, squares, status } = this.state;
 
         return (
             <Container>
@@ -125,30 +137,46 @@ class Game extends React.Component {
                     </Col>
                 </Row>
                 {(playerId !== -1) ? (
-
                     <div>
-                        <Row>
-                            <Col sm={10}>
-                                <div className="game">
-                                    <div className="game-board">
-                                        <Board
-                                            squares={squares}
-                                            onClick={i => this.handleClick(i)}
-                                        />
-                                    </div>
-                                    <div className="game-info">
-                                        <row>
-                                            <h6>X - Player</h6>
-                                        </row>
-                                        <row>
-                                            <h6> O - Machine</h6>
-                                        </row>
-                                    </div>
+                        {(status === 1) ? (
+                            <Row>
+                                <Col sm={10}>
+                                    <Alert color="success"><h6>You Won!</h6></Alert>
+                                </Col>
+                            </Row>
+                        ) : null}
+                        {(status === 2) ? (
+                            <Row>
+                                <Col sm={10}>
+                                    <Alert color="primary"><h6>Machine Won!</h6></Alert>
+                                </Col>
+                            </Row>
+                        ) : null}
+                        {(status === 0) ? (
+                            <Row>
+                                <Col sm={10}>
+                                    <Alert color="secondary"><h6>No One Wins!</h6></Alert>
+                                </Col>
+                            </Row>
+                        ) : null}
 
-                                </div>
-                            </Col>
-                        </Row>
+                        <div className="game">
+                            <div className="game-board">
+                                <Board
+                                    squares={squares}
+                                    onClick={i => this.move(i)}
+                                />
+                            </div>
+                            <div className="game-info">
+                                <Row>
+                                    <h6>X - Player</h6>
+                                </Row>
+                                <Row>
+                                    <h6> O - Machine</h6>
+                                </Row>
+                            </div>
 
+                        </div>
                     </div>
 
                 ) : null}

@@ -26,13 +26,13 @@ public class TicTacToeUtils {
 	 */
 	public int checkGameStatus(List<Move> moves) {
 		logger.debug("checkGameStatus::moves: " + moves);
-		int gameStatus = Constants.NO_ONE_WINS;
+		int gameStatus = Constants.GAME_IN_PROGRESS;
 		if (moves == null)
 			return gameStatus;
 		TicTacToe ticTacToe = new TicTacToe(Constants.GAME_SIZE);
 		for (Move move : moves) {
 			gameStatus = ticTacToe.move(getRow(move.getMove()), getCol(move.getMove()), move.getPlayer());
-			if (gameStatus != Constants.NO_ONE_WINS) // return game status if player or machine wins
+			if (gameStatus != Constants.GAME_IN_PROGRESS) // return game status if player or machine wins
 				return gameStatus;
 		}
 		logger.debug("checkGameStatus::gameStatus: " + gameStatus);
@@ -53,7 +53,7 @@ public class TicTacToeUtils {
 	public int findBestMove(List<Move> moves) {
 		logger.debug("findBestMove::moves: " + moves.toString());
 		int bestMove = Constants.NO_MOVE;
-		int gameStatus = Constants.NO_ONE_WINS;
+		int gameStatus = Constants.GAME_IN_PROGRESS;
 		TicTacToe ticTacToe = new TicTacToe(Constants.GAME_SIZE);
 
 		List<Integer> m = new ArrayList<>();

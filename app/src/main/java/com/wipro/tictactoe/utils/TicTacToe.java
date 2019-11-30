@@ -71,7 +71,7 @@ public class TicTacToe {
 		else if ((rowCounter[row] == -size || colCounter[col] == -size || diagLeft == -size || diagRight == -size))
 			return Constants.MACHINE_WINS;
 		else
-			return Constants.NO_ONE_WINS;
+			return Constants.GAME_IN_PROGRESS;
 	}
 
 	public int getMinValue() {

@@ -4,6 +4,7 @@ public enum ErrorMessages {
 	
 	GAME_NOT_FOUND("Game not found"),
 	PLAYER_ALREADY_EXISTS("Player already exists"),
+	PLAYER_NOT_FOUND("Player not found"),
 	MOVE_NOT_ALLOWED("Move not allowed"),
 	INTERNAL_SERVER_ERROR("Something went wrong. Please repeat this operation later.");
 

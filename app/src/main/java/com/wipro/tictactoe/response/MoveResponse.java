@@ -1,11 +1,12 @@
 package com.wipro.tictactoe.response;
 
 import com.wipro.tictactoe.model.Move;
+import com.wipro.tictactoe.utils.Constants;
 
 public class MoveResponse {
 
 	private Move move;
-	private int status;
+	private int status = Constants.GAME_IN_PROGRESS;
 
 	public Move getMove() {
 		return move;

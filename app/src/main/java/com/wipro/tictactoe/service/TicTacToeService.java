@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import com.wipro.tictactoe.exception.ErrorMessages;
 import com.wipro.tictactoe.exception.GameNotFoundException;
 import com.wipro.tictactoe.exception.MoveNotAllowedException;
 import com.wipro.tictactoe.exception.PlayerAlreadyExistsException;
+import com.wipro.tictactoe.exception.PlayerNotFoundException;
 import com.wipro.tictactoe.model.Game;
 import com.wipro.tictactoe.model.Move;
 import com.wipro.tictactoe.model.Player;
@@ -47,6 +50,7 @@ public class TicTacToeService {
 	 * @param playerName
 	 * @return
 	 */
+	@Transactional
 	public StartResponse startGame(String playerName) {
 
 		logger.debug("playerName: " + playerName);
@@ -68,19 +72,30 @@ public class TicTacToeService {
 			Game game = new Game();
 			game.setPlayerId(newPlayer.getId());
 			game.setStart(new Date());
-			game.setStatus(Constants.NO_ONE_WINS);
+			game.setStatus(Constants.GAME_IN_PROGRESS);
 			Game newGame = gameRepository.save(game);
 
 			// game response
 			response = new StartResponse();
 			response.setPlayerId(newPlayer.getId());
 			response.setGameId(newGame.getId());
-			response.setMoves(moveRepository.findByGameId(newGame.getId()));
 			response.setStatus(newGame.getStatus());
+			response.setMoves(moveRepository.findByGameId(game.getId()));
 
-		} else { // Player already exists
-			throw new PlayerAlreadyExistsException(
-					ErrorMessages.PLAYER_ALREADY_EXISTS.getErrorMessage() + " (" + playerName + ")");
+		} else {
+
+			int playerId = players.get(0).getId();
+			logger.debug("playerId: " + playerId);
+
+			Game game = gameRepository.findLastGame(playerId);
+			logger.debug("game: " + game);
+
+			// game response
+			response = new StartResponse();
+			response.setPlayerId(playerId);
+			response.setGameId(game.getId());
+			response.setStatus(game.getStatus());
+			response.setMoves(moveRepository.findByGameId(game.getId()));
 		}
 
 		return response;
@@ -94,6 +109,7 @@ public class TicTacToeService {
 	 * @param move
 	 * @return
 	 */
+	@Transactional
 	public MoveResponse move(int gameId, int move) {
 
 		logger.debug("gameId: " + gameId);
@@ -110,9 +126,10 @@ public class TicTacToeService {
 		logger.debug("findByGameIdAndMove::moves: " + moves.toString());
 
 		if ((moves != null && moves.size() == 0) && move <= Math.pow(2, Constants.GAME_SIZE)
-				&& game.get().getStatus() == Constants.NO_ONE_WINS) { // Valid move
+				&& game.get().getStatus() == Constants.GAME_IN_PROGRESS) { // Valid move
 
 			moves = moveRepository.findByGameId(gameId);
+
 			response = new MoveResponse();
 
 			// Save player move
@@ -133,7 +150,15 @@ public class TicTacToeService {
 				gameRepository.save(game.get());
 				// return response
 				response.setStatus(Constants.PLAYER_WINS);
-				response.setStatus(Constants.NO_MOVE);
+				return response;
+			}
+
+			// Check if Game draw
+			if (moves.size() == (Math.pow(2, Constants.GAME_SIZE) + 1)) {
+				game.get().setStatus(Constants.NO_ONE_WINS);
+				game.get().setEnd(new Date());
+				gameRepository.save(game.get());
+				response.setStatus(Constants.NO_ONE_WINS);
 				return response;
 			}
 
@@ -159,11 +184,48 @@ public class TicTacToeService {
 				gameRepository.save(game.get());
 				response.setStatus(Constants.MACHINE_WINS);
 			}
-
 		} else { // Invalid move
 			throw new MoveNotAllowedException(ErrorMessages.MOVE_NOT_ALLOWED.getErrorMessage() + " (" + move + ")");
 		}
 
 		return response;
 	}
+
+	/**
+	 * Restart the game for a player
+	 * 
+	 * @param playerId
+	 * @return
+	 */
+	@Transactional
+	public StartResponse restartGame(int playerId) {
+
+		logger.debug("playerId: " + playerId);
+
+		StartResponse response = null;
+
+		Optional<Player> player = playerRepository.findById(playerId);
+
+		if (player.isPresent()) { // New player
+
+			// Create a new game for the player
+			Game game = new Game();
+			game.setPlayerId(playerId);
+			game.setStart(new Date());
+			game.setStatus(Constants.GAME_IN_PROGRESS);
+			Game newGame = gameRepository.save(game);
+
+			// game response
+			response = new StartResponse();
+			response.setPlayerId(playerId);
+			response.setGameId(newGame.getId());
+			response.setStatus(newGame.getStatus());
+
+		} else { // Player not found
+			throw new PlayerNotFoundException(ErrorMessages.PLAYER_NOT_FOUND.getErrorMessage() + " (" + playerId + ")");
+		}
+
+		return response;
+	}
+
 }
