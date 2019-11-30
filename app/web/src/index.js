@@ -204,9 +204,7 @@ class Game extends React.Component {
 
                         </div>
                         <div className="game-controls" >
-                            <a href="/#" onClick={this.restartGame}>
-                                RESTART GAME
-                            </a>
+                            <Button type="button" onClick={this.restartGame} color="primary" outline>RESTART GAME</Button>
                         </div>
                     </div>
 
