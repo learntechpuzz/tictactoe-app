@@ -110,8 +110,8 @@ public class TicTacToeService {
 	@Transactional
 	public MoveResponse move(int gameId, int move) {
 
-		logger.debug("gameId: " + gameId);
-		logger.debug("move: " + move);
+		logger.debug("move::gameId: " + gameId);
+		logger.debug("move::move: " + move);
 
 		MoveResponse response = null;
 
@@ -121,12 +121,14 @@ public class TicTacToeService {
 
 		List<Move> moves = moveRepository.findByGameIdAndMove(gameId, move);
 
-		logger.debug("findByGameIdAndMove::moves: " + moves.toString());
+		logger.debug("move::findByGameIdAndMove::moves: " + moves.toString());
 
 		if ((moves != null && moves.size() == 0) && move <= Math.pow(2, Constants.GAME_SIZE)
 				&& game.get().getStatus() == Constants.GAME_IN_PROGRESS) { // Valid move
 
 			moves = moveRepository.findByGameId(gameId);
+
+			logger.debug("move::existing moves: " + moves.toString());
 
 			response = new MoveResponse();
 
@@ -140,8 +142,11 @@ public class TicTacToeService {
 			// Include saved player move into moves
 			moves.add(newPlayerMove);
 
+			logger.debug("move::after adding player move::moves: " + moves.toString());
+
 			// Check if Player wins
 			if (ticTacToeUtils.checkGameStatus(moves) == Constants.PLAYER_WINS) {
+				logger.debug("move::Player wins");
 				// Save game status as Player wins
 				game.get().setStatus(Constants.PLAYER_WINS);
 				game.get().setEnd(new Date());
@@ -153,6 +158,7 @@ public class TicTacToeService {
 
 			// Check if Game draw
 			if (moves.size() == (Math.pow(2, Constants.GAME_SIZE) + 1)) {
+				logger.debug("move::Game draw");
 				game.get().setStatus(Constants.NO_ONE_WINS);
 				game.get().setEnd(new Date());
 				gameRepository.save(game.get());
@@ -160,10 +166,14 @@ public class TicTacToeService {
 				return response;
 			}
 
+			// Find best move
+			int bestMove = ticTacToeUtils.findBestMove(moves);
+			logger.debug("move::bestMove: " + bestMove);
+			
 			// Find machine best move (AI)
 			Move machineMove = new Move();
 			machineMove.setGameId(gameId);
-			machineMove.setMove(ticTacToeUtils.findBestMove(moves));
+			machineMove.setMove(bestMove);
 			machineMove.setPlayer(Constants.MACHINE);
 
 			// Save the machine best move
@@ -171,11 +181,16 @@ public class TicTacToeService {
 
 			// Include saved machine best move into moves
 			moves.add(newMachineMove);
+			
+			
+			logger.debug("move::after adding machine move::moves: " + moves.toString());
+			
 			// set the saved machine best move in response
 			response.setMove(newMachineMove);
 
 			// Check if Machine wins
 			if (ticTacToeUtils.checkGameStatus(moves) == Constants.MACHINE_WINS) {
+				logger.debug("move::Machine wins");
 				// Save game status as machine wins
 				game.get().setStatus(Constants.MACHINE_WINS);
 				game.get().setEnd(new Date());

@@ -65,7 +65,7 @@ public class TicTacToeUtils {
 		}
 
 		Map<Integer, Integer> minValues = new HashMap<>();
-		for (int i = 0; i < Math.pow(2, Constants.GAME_SIZE); i++) {
+		for (int i = 0; i <= Math.pow(2, Constants.GAME_SIZE); i++) {
 			ticTacToe = getTicTacToe(moves);
 			logger.debug("findBestMove::machine::ticTacToe: " + ticTacToe.toString());
 			logger.debug("findBestMove::machine::i: " + i);
@@ -83,7 +83,7 @@ public class TicTacToeUtils {
 			}
 		}
 
-		for (int i = 0; i < Math.pow(2, Constants.GAME_SIZE); i++) {
+		for (int i = 0; i <= Math.pow(2, Constants.GAME_SIZE); i++) {
 			ticTacToe = getTicTacToe(moves);
 			logger.debug("findBestMove::player::ticTacToe: " + ticTacToe.toString());
 			logger.debug("findBestMove::player::i: " + i);
