@@ -6,6 +6,7 @@ import './style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
 
+
 function Square(props) {
     return (
         <button className="square" onClick={props.onClick}>
@@ -106,43 +107,47 @@ class Game extends React.Component {
                         </Col>
                     </Row>
                 ) : null}
-                <Row>
-                    <Col sm={10}>
-                        <AvForm onValidSubmit={this.onSubmit}>
-                            <AvGroup row>
-                                <Col sm={5}>
-                                    <AvInput required type="text" name="playerName" id="playerName" value={playerName} onChange={this.onChange} placeholder="Enter player name" />
-                                    <AvFeedback>Player name is required!</AvFeedback>
-                                </Col>
-                                <Col sm={5}>
-                                    <Button type="submit" color="primary">START</Button>
-                                </Col>
-                            </AvGroup>
-                        </AvForm>
-                    </Col>
-                </Row>
-                {(playerId !== -1) ? (
-                    <div>
-                        <Row>
-                            <Col sm={10}>
-                                Weclome {playerName}!
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col sm={10}>
-                                <div className="game">
-                                    <div className="game-board">
-                                        <Board
-                                            squares={squares}
-                                            onClick={i => this.handleClick(i)}
-                                        />
-                                    </div>
-                                </div>
-                            </Col>
-                        </Row>
-                    </div>
+                
+                    <Row>
+                        <Col sm={10}>
+                            <AvForm onValidSubmit={this.onSubmit}>
+                                <AvGroup row>
+                                    <Col sm={5}>
+                                        <AvInput required type="text" name="playerName" id="playerName" value={playerName} onChange={this.onChange} placeholder="Enter player name" />
+                                        <AvFeedback>Player name is required!</AvFeedback>
+                                    </Col>
+                                    <Col sm={5}>
+                                        <Button type="submit" color="primary" outline>START</Button>
+                                    </Col>
+                                </AvGroup>
+                            </AvForm>
+                        </Col>
+                    </Row>
+                    {(playerId !== -1) ? (
 
-                ) : null}
+                        <div>
+                            <Row>
+                                <Col sm={10}>
+                                    <h5>
+                                        Weclome {playerName}!
+                                    </h5>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col sm={10}>
+                                    <div className="game">
+                                        <div className="game-board">
+                                            <Board
+                                                squares={squares}
+                                                onClick={i => this.handleClick(i)}
+                                            />
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </div>
+
+                    ) : null }
 
             </Container>
         );
